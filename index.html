@@ -529,12 +529,8 @@
       brushSize = size;
     }
 
-    const ads = [
-      { text: "TRUST US! WITH YOUR EVERYTHING!", img: "https://i.pinimg.com/736x/58/93/5d/58935d712f09408a4afe0c7356b2ed5b.jpg" },
-      { text: "THIS WOMEN SUCKS!", img: "https://i.ytimg.com/vi/QOxdEhzzTwI/maxresdefault.jpg" },
-      { text: "FOUND DEAD AFTER DYING", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_zzrzIsfCJVE8sBB4Klk88vF5FAfIKiq29g&s" },
-      { text: "SOMEONE FOUND STEALING MY WATER BOTTLE", img: "https://perfecthomes.co.th/wp-content/uploads/2021/01/Drinking-Water-Chiang-Mai-1-Post-1024x683.jpg" },
-    ];
+    let ads = [];
+    let lastAdIndex = -1;
 
     const adWin = document.getElementById('adWin');
     const adText = document.getElementById('adText');
@@ -544,8 +540,30 @@
     const adDuration = 8000;
     let adInterval;
 
+    async function loadAds() {
+      try {
+        const response = await fetch('https://raw.githubusercontent.com/PanyaDevX/se_ahz98/refs/heads/main/ads');
+        ads = await response.json();
+        if (ads.length === 0) return;
+
+        showAd();
+        adInterval = setInterval(changeAd, adDuration);
+      } catch (err) {
+        console.error('Failed to load ads:', err);
+      }
+    }
+
     function changeAd() {
-      const randomAd = ads[Math.floor(Math.random() * ads.length)];
+      if (ads.length === 0) return;
+
+      let randomIndex;
+      do {
+        randomIndex = Math.floor(Math.random() * ads.length);
+      } while (ads.length > 1 && randomIndex === lastAdIndex);
+
+      lastAdIndex = randomIndex;
+      const randomAd = ads[randomIndex];
+
       adText.textContent = randomAd.text;
       adImage.src = randomAd.img;
 
@@ -564,6 +582,8 @@
           if (step >= sizes.length) clearInterval(anim);
         }, 40);
       }
+
+      changeAd();
     }
 
     function startAdProgress() {
@@ -596,9 +616,7 @@
       setTimeout(() => showAd(), 3000);
     }
 
-    adInterval = setInterval(changeAd, adDuration);
-    showAd();
-    changeAd();
+    loadAds();
   </script>
 </body>
 
