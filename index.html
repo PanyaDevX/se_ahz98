@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SE_AHZ98</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      background: #008080;
+      color: black;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .center-icon {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 200px;
+      height: 200px;
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .desktop-icon:hover {
+      transform: scale(1.1);
+      background: rgba(0, 102, 255, 0.2);
+    }
+
+    .desktop-icon:active {
+      transform: scale(0.95);
+      background: rgba(0, 102, 255, 0.3);
+    }
+
+    .center-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom,
+          transparent 50%,
+          rgba(0, 0, 0, 0.05) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      animation: scanline 8s linear infinite;
+    }
+
+    @keyframes scanline {
+      0% {
+        transform: translateY(0);
+      }
+
+      100% {
+        transform: translateY(4px);
+      }
+    }
+
+    .window {
+      background: #c0c0c0;
+      border: 2px solid #fff;
+      border-right-color: #404040;
+      border-bottom-color: #404040;
+      padding: 0;
+      width: 600px;
+      max-width: 90%;
+      box-shadow: 3px 3px 0 #0000006c;
+    }
+
+    .titlebar {
+      background: navy;
+      color: white;
+      padding: 4px 6px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    .titlebar-buttons span {
+      display: inline-block;
+      width: 16px;
+      height: 14px;
+      background: #c0c0c0;
+      border: 2px solid #fff;
+      border-right-color: #404040;
+      border-bottom-color: #404040;
+      margin-left: 4px;
+      text-align: center;
+      line-height: 12px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .content {
+      padding: 15px;
+      background: #dcdcdc;
+      font-size: 14px;
+    }
+
+    .desktop-icon {
+      width: 80px;
+      text-align: center;
+      color: white;
+      font-size: 13px;
+      margin: 20px;
+      cursor: pointer;
+    }
+
+    .desktop-icon img {
+      width: 48px;
+      height: 48px;
+      display: block;
+      margin: auto;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #c0c0c0;
+      border-top: 2px solid #fff;
+      padding: 4px 10px;
+      font-size: 14px;
+      box-shadow: 0 -2px 0 #808080;
+      text-align: center;
+    }
+
+    @keyframes popup {
+      0% {
+        transform: scale(0.35);
+        opacity: 0;
+      }
+
+      40% {
+        transform: scale(0.5);
+      }
+
+      70% {
+        transform: scale(0.75);
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes shrink {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      40% {
+        transform: scale(0.8);
+      }
+
+      70% {
+        transform: scale(0.5);
+      }
+
+      100% {
+        transform: scale(0.3);
+        opacity: 0;
+      }
+    }
+
+    #paintCanvas {
+      border: 2px inset #808080;
+      background: white;
+      cursor: crosshair;
+      display: block;
+      margin: 10px auto;
+    }
+
+    .paint-tools {
+      margin: 10px 0;
+      padding: 5px;
+      background: #c0c0c0;
+      border: 2px groove #fff;
+    }
+
+    .paint-tools button {
+      margin: 2px;
+      padding: 5px 10px;
+      background: #c0c0c0;
+      border: 2px outset #fff;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+    }
+
+    .paint-tools button:active {
+      border-style: inset;
+    }
+
+    input[type="color"] {
+      width: 40px;
+      height: 25px;
+      border: 2px inset #808080;
+      cursor: pointer;
+    }
+
+    .contact-item {
+      padding: 8px;
+      margin: 5px 0;
+      background: white;
+      border: 1px solid #808080;
+    }
+
+    .contact-item strong {
+      color: navy;
+    }
+
+    #adOkayBtn {
+      margin: 2px;
+      padding: 5px 10px;
+      background: #c0c0c0;
+      border: 2px outset #fff;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+    }
+
+    #adOkayBtn:active {
+      border-style: inset;
+    }
+
+    #adWin .content {
+      position: relative;
+      padding: 0;
+      background: #dcdcdc;
+      height: 220px;
+    }
+
+    #adImage {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="center-icon">
+    <img src="imgs/pixel_art_large (1).png" alt="Center Icon" />
+  </div>
+
+  <div class="desktop">
+    <div class="desktop-icon" onclick="openWindow('aboutWin')">
+      <img src="imgs/user.png" />
+      <div>About Me</div>
+    </div>
+    <!--<div class="desktop-icon" onclick="openWindow('projectsWin')">
+      <img src="imgs/prkjs.png" />
+      <div>Projects</div>
+    </div>-->
+    <div class="desktop-icon" onclick="openWindow('contactsWin')">
+      <img src="imgs/web.png" />
+      <div>Contacts</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('paintWin')">
+      <img src="imgs/paint.png" />
+      <div>Paint</div>
+    </div>
+  </div>
+
+  <div class="window" id="aboutWin" style="display:none; position:absolute; top:120px; left:120px;"
+    onclick="bringToFront(this)">
+    <div class="titlebar" onmousedown="dragStart(event, 'aboutWin')">
+      <span>About Me</span>
+      <div class="titlebar-buttons"><span onclick="closeWindow('aboutWin')">X</span></div>
+    </div>
+    <div class="content">
+      HELLO! ITZ ME! <strong>Non</strong> or you might know me as <em>Se_ahz</em> in social media and no i dont fw with
+      that name dont ever called me that irl, im a passionate game developer but none play my game anyways thanks for
+      reading! Stranger??
+    </div>
+  </div>
+
+  <div class="window" id="projectsWin" style="display:none; position:absolute; top:200px; left:200px;"
+    onclick="bringToFront(this)">
+    <div class="titlebar" onmousedown="dragStart(event, 'projectsWin')">
+      <span>Projects</span>
+      <div class="titlebar-buttons"><span onclick="closeWindow('projectsWin')">X</span></div>
+    </div>
+    <div class="content">
+      <strong>My Projects:</strong><br><br>
+      • <strong>funy</strong> - no<br>
+      • <strong>funy</strong> - no<br>
+      <br><br>
+      <em>Status: skibidi</em>
+    </div>
+  </div>
+
+  <div class="window" id="contactsWin" style="display:none; position:absolute; top:180px; left:300px;"
+    onclick="bringToFront(this)">
+    <div class="titlebar" onmousedown="dragStart(event, 'contactsWin')">
+      <span>Contacts</span>
+      <div class="titlebar-buttons"><span onclick="closeWindow('contactsWin')">X</span></div>
+    </div>
+    <div class="content">
+      <strong>My contacts:</strong><br><br>
+      <div class="contact-item">
+        <strong>Roblox:</strong> se_ahz (@game55346)
+      </div>
+      <div class="contact-item">
+        <strong>Instagram:</strong> @se_ahzzz
+      </div>
+      <div class="contact-item">
+        <strong>Discord:</strong> se_ahz
+      </div>
+      <div class="contact-item">
+        <strong>X (Twitter):</strong> @se_ahz
+      </div>
+      <div class="contact-item">
+        <strong>Gmail:</strong> unfairgq@gmail.com
+      </div>
+      <br>
+      <em>Coolz</em>
+    </div>
+  </div>
+
+  <div class="window" id="paintWin" style="display:none; position:absolute; top:150px; left:250px; width:500px;"
+    onclick="bringToFront(this)">
+    <div class="titlebar" onmousedown="dragStart(event, 'paintWin')">
+      <span>Paint</span>
+      <div class="titlebar-buttons"><span onclick="closeWindow('paintWin')">X</span></div>
+    </div>
+    <div class="content">
+      <div class="paint-tools">
+        <button onclick="clearCanvas()">Clear</button>
+        <button onclick="saveCanvas()">Save</button>
+        <button onclick="changeBrushSize(2)">Thin</button>
+        <button onclick="changeBrushSize(5)">Medium</button>
+        <button onclick="changeBrushSize(10)">Thick</button>
+        <label>Color: <input type="color" id="colorPicker" value="#000000"></label>
+      </div>
+      <canvas id="paintCanvas" width="460" height="300"></canvas>
+    </div>
+  </div>
+
+  <div class="window" id="adWin" style="display:none; position:absolute; top:50px; left:50px; width:500px;"
+    onclick="bringToFront(this)">
+    <div class="titlebar" onmousedown="dragStart(event, 'adWin')">
+      <span>SHITPOST</span>
+      <div class="titlebar-buttons"><span onclick="closeWindowWithReopen('adWin')">X</span></div>
+    </div>
+    <div class="content" id="adContent"
+      style="position:relative; width:100%; height:300px; text-align:center; font-weight:bold;">
+
+      <img id="adImage"
+        src="https://static.wikia.nocookie.net/hazbinhotel/images/7/71/Voxtek.IMG_20251114_165011.jpg/revision/latest?cb=20251114195134"
+        style="width:100%; height:100%; object-fit:cover;" />
+
+      <div id="adText" style="
+      position:absolute;
+      top:10px;
+      left:50%;
+      transform:translateX(-50%);
+      color:white;
+      font-size:18px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      background-color: rgba(0, 0, 0, 0.425);
+      padding: 4px 8px;
+">
+        Your Ad Text Here
+      </div>
+
+      <div id="adProgressContainer"
+        style="position:absolute; bottom:15px; left:15px; right:15px; height:10px; background:#808080; border:2px inset #fff;">
+        <div id="adProgressBar" style="width:0%; height:100%; background:navy;"></div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <footer>[ SE_AHZ ]</footer>
+
+  <script>
+    let zIndexCounter = 10;
+
+    function bringToFront(element) {
+      zIndexCounter++;
+      element.style.zIndex = zIndexCounter;
+    }
+
+    function openWindow(id) {
+      const w = document.getElementById(id);
+
+      if (w.style.display === 'block') {
+        bringToFront(w);
+        return;
+      }
+
+      bringToFront(w);
+      w.style.display = 'block';
+      w.style.transform = 'scale(0.35)';
+      let step = 0;
+      const sizes = [0.35, 0.5, 0.75, 1];
+      const anim = setInterval(() => {
+        w.style.transform = 'scale(' + sizes[step] + ')';
+        step++;
+        if (step >= sizes.length) clearInterval(anim);
+      }, 40);
+    }
+
+    function closeWindow(id) {
+      const w = document.getElementById(id);
+      let step = 0;
+      const sizes = [1, 0.75, 0.5, 0.35, 0.15];
+      const anim = setInterval(() => {
+        w.style.transform = 'scale(' + sizes[step] + ')';
+        step++;
+        if (step >= sizes.length) {
+          clearInterval(anim);
+          w.style.display = 'none';
+        }
+      }, 40);
+    }
+
+    let dragObj = null;
+    let offsetX = 0, offsetY = 0;
+
+    function dragStart(e, id) {
+      const w = document.getElementById(id);
+      bringToFront(w);
+      dragObj = w;
+      offsetX = e.clientX - dragObj.offsetLeft;
+      offsetY = e.clientY - dragObj.offsetTop;
+      document.onmousemove = dragMove;
+      document.onmouseup = dragEnd;
+    }
+    function dragMove(e) {
+      if (!dragObj) return;
+
+      const winWidth = dragObj.offsetWidth,
+        winHeight = dragObj.offsetHeight;
+      const footerHeight = document.querySelector('footer').offsetHeight;
+      const maxLeft = window.innerWidth - winWidth,
+        maxTop = window.innerHeight - winHeight - footerHeight;
+
+      let newLeft = e.clientX - offsetX;
+      let newTop = e.clientY - offsetY;
+
+      if (newLeft < 0) newLeft = 0;
+      if (newTop < 0) newTop = 0;
+      if (newLeft > maxLeft) newLeft = maxLeft;
+      if (newTop > maxTop) newTop = maxTop;
+
+      dragObj.style.left = newLeft + 'px';
+      dragObj.style.top = newTop + 'px';
+    }
+
+    function dragEnd() {
+      dragObj = null;
+      document.onmousemove = null;
+    }
+
+    const canvas = document.getElementById('paintCanvas');
+    const ctx = canvas ? canvas.getContext('2d') : null;
+    let isDrawing = false;
+    let brushSize = 5;
+
+    if (canvas) {
+      canvas.addEventListener('mousedown', (e) => {
+        isDrawing = true;
+        const rect = canvas.getBoundingClientRect();
+        ctx.beginPath();
+        ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+      });
+
+      canvas.addEventListener('mousemove', (e) => {
+        if (!isDrawing) return;
+        const rect = canvas.getBoundingClientRect();
+        ctx.strokeStyle = document.getElementById('colorPicker').value;
+        ctx.lineWidth = brushSize;
+        ctx.lineCap = 'round';
+        ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+        ctx.stroke();
+      });
+
+      canvas.addEventListener('mouseup', () => {
+        isDrawing = false;
+      });
+
+      canvas.addEventListener('mouseleave', () => {
+        isDrawing = false;
+      });
+    }
+
+    function clearCanvas() {
+      if (ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    function saveCanvas() {
+      if (canvas) {
+        const link = document.createElement('a');
+        link.download = 'my-drawing.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      }
+    }
+
+    function changeBrushSize(size) {
+      brushSize = size;
+    }
+
+    const ads = [
+      { text: "TRUST US! WITH YOUR EVERYTHING!", img: "https://i.pinimg.com/736x/58/93/5d/58935d712f09408a4afe0c7356b2ed5b.jpg" },
+      { text: "THIS WOMEN SUCKS!", img: "https://i.ytimg.com/vi/QOxdEhzzTwI/maxresdefault.jpg" },
+      { text: "FOUND DEAD AFTER DYING", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_zzrzIsfCJVE8sBB4Klk88vF5FAfIKiq29g&s" },
+      { text: "SOMEONE FOUND STEALING MY WATER BOTTLE", img: "https://perfecthomes.co.th/wp-content/uploads/2021/01/Drinking-Water-Chiang-Mai-1-Post-1024x683.jpg" },
+    ];
+
+    const adWin = document.getElementById('adWin');
+    const adText = document.getElementById('adText');
+    const adImage = document.getElementById('adImage');
+    const adProgressBar = document.getElementById('adProgressBar');
+
+    const adDuration = 8000;
+    let adInterval;
+
+    function changeAd() {
+      const randomAd = ads[Math.floor(Math.random() * ads.length)];
+      adText.textContent = randomAd.text;
+      adImage.src = randomAd.img;
+
+      startAdProgress();
+    }
+
+    function showAd() {
+      if (adWin.style.display !== 'block') {
+        adWin.style.display = 'block';
+        adWin.style.transform = 'scale(0.35)';
+        let step = 0;
+        const sizes = [0.35, 0.5, 0.75, 1];
+        const anim = setInterval(() => {
+          adWin.style.transform = 'scale(' + sizes[step] + ')';
+          step++;
+          if (step >= sizes.length) clearInterval(anim);
+        }, 40);
+      }
+    }
+
+    function startAdProgress() {
+      let startTime = Date.now();
+      adProgressBar.style.width = "0%";
+
+      function updateProgress() {
+        const elapsed = Date.now() - startTime;
+        let progress = Math.min((elapsed / adDuration) * 100, 100);
+        adProgressBar.style.width = progress + "%";
+        if (progress < 100) requestAnimationFrame(updateProgress);
+      }
+
+      updateProgress();
+    }
+
+    function closeWindowWithReopen(id) {
+      const w = document.getElementById(id);
+      let step = 0;
+      const sizes = [1, 0.75, 0.5, 0.35, 0.15];
+      const anim = setInterval(() => {
+        w.style.transform = 'scale(' + sizes[step] + ')';
+        step++;
+        if (step >= sizes.length) {
+          clearInterval(anim);
+          w.style.display = 'none';
+        }
+      }, 40);
+
+      setTimeout(() => showAd(), 3000);
+    }
+
+    adInterval = setInterval(changeAd, adDuration);
+    showAd();
+    changeAd();
+  </script>
+</body>
+
+</html>
