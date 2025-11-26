@@ -3,4 +3,5 @@
   { "text": "THIS WOMEN SUCKS!", "img": "https://i.ytimg.com/vi/QOxdEhzzTwI/maxresdefault.jpg" },
   { "text": "FOUND DEAD AFTER DYING", "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_zzrzIsfCJVE8sBB4Klk88vF5FAfIKiq29g&s" },
   { "text": "SOMEONE FOUND STEALING MY WATER BOTTLE", "img": "https://perfecthomes.co.th/wp-content/uploads/2021/01/Drinking-Water-Chiang-Mai-1-Post-1024x683.jpg" }
+  { "text": "SOMEONE FOUND TRYING TO BE HASHIRA", "img": "https://www.thrive7martialarts.com/wp-content/uploads/2024/07/mastering-taekwondo-techniques-and-forms-a-comprehensive-guide-1080x675.png" }
 ]
